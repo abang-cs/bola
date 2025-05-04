@@ -1,85 +1,391 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <title>Panduan bola</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Game Rules</title>
+
+ 
+  <script>
+    const sessionDuration = 10 * 60 * 1000; 
+    if (!sessionStorage.getItem("sessionStart")) {
+      sessionStorage.setItem("sessionStart", Date.now());
+    }
+    setInterval(() => {
+      const sessionStart = parseInt(sessionStorage.getItem("sessionStart"));
+      const now = Date.now();
+      if ((now - sessionStart) > sessionDuration) {
+        window.location.href = "about:blank";
+      }
+    }, 1000);
+  </script>
+
   <style>
-    /* Style custom kamu di sini */
+  
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: Arial, sans-serif;
-      background-color: #f5f5f5;
-      padding: 40px;
-      line-height: 1.6;
+      background-color: #f4f7fc;
       color: #333;
+      line-height: 1.6;
+      padding: 0;
+      overflow-x: hidden;
     }
-    h2 {
-      color: #2c3e50;
-      border-bottom: 2px solid #ccc;
-      padding-bottom: 5px;
+
+    .search-container {
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      background: #f4f7fc;
+      padding: 15px 10px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      display: flex;
+      justify-content: center;
     }
-    pre {
+
+    .search-box {
+      position: relative;
+      width: 100%;
+      max-width: 500px;
+      display: flex;
+      align-items: center;
+      border-radius: 25px;
       background-color: #fff;
-      border-left: 4px solid #2980b9;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      transition: all 0.4s ease-in-out;
+    }
+
+    .search-box input {
+      width: 0;
+      padding: 10px;
+      border: none;
+      outline: none;
+      font-size: 16px;
+      border-radius: 25px;
+      transition: width 0.4s ease-in-out;
+      flex-grow: 1;
+      opacity: 0.7;
+    }
+
+    .search-box.active input {
+      width: 100%;
+      padding: 10px;
+      opacity: 1;
+    }
+
+    .search-box input:focus {
+      border: 2px solid #3498db;
+      box-shadow: 0 0 8px rgba(52, 152, 219, 0.8);
+      transform: scale(1.05);
+    }
+
+    .search-box button {
+      background-color: #3498db;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+      border-radius: 50%;
+      margin-left: 5px;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .search-box button:hover {
+      background-color: #2980b9;
+      transform: scale(1.1);
+    }
+
+    .search-box button:active {
+      transform: scale(0.9);
+    }
+
+    .search-box button svg {
+      fill: #fff;
+      width: 20px;
+      height: 20px;
+    }
+
+    header h1 {
+      text-align: center;
+      font-size: 2.5rem;
+      margin: 20px 0;
+      color: #2c3e50;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+
+    .parallax {
+      background: url('https://via.placeholder.com/1500x500') center center fixed;
+      background-size: cover;
+      height: 100px;
+      margin-bottom: 20px;
+      border-radius: 0 0 12px 12px;
+    }
+
+    .content {
+      margin: 20px auto;
+      max-width: 900px;
+      padding: 0 10px;
+    }
+
+    .content section {
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 1s forwards;
+      margin-bottom: 20px;
+      background: #fff;
+      padding: 15px;
+      border-radius: 10px;
+      transition: all 0.4s ease;
+    }
+
+    .content section:hover {
+      background-color: #ecf0f1;
+      transform: translateY(-5px);
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .content pre {
+      background-color: #fff;
+      border-left: 4px solid #3498db;
       padding: 15px;
       white-space: pre-wrap;
-      word-break: break-word;
+      word-wrap: break-word;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+    }
+
+    .content pre:hover {
+      transform: scale(1.02);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .search-highlight {
+      background-color: #e74c3c;
+      color: #fff;
+      animation: pulseHighlight 1s ease-out infinite;
+    }
+
+    @keyframes pulseHighlight {
+      0% { background-color: #e74c3c; }
+      50% { background-color: #f39c12; }
+      100% { background-color: #e74c3c; }
+    }
+
+    section.hidden {
+      display: none;
+    }
+
+    @media (max-width: 600px) {
+      .search-box input { font-size: 14px; }
+      .content pre { font-size: 14px; }
+      header h1 { font-size: 1.8rem; }
+      .parallax { height: 80px; }
+    }
+
+    .content h2 {
+      font-size: 1.3rem;
+      transition: all 0.3s ease;
+      margin-bottom: 8px;
+    }
+
+    .content section:hover h2 {
+      color: #2980b9;
+      transform: scale(1.03);
+      text-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
   </style>
 </head>
+
 <body>
+ <div class="search-container">
+    <div class="search-box" id="searchBox">
+      <input type="text" id="searchInput" placeholder="Cari panduan..." oninput="filterContent()">
+      <button onclick="toggleSearch(event)">
+        <svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 24 24">
+          <path fill="#ffffff" d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 
+          6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 
+          4.23-1.57l.27.28v.79l5 4.99L20.49 
+          19l-4.99-5zm-6 0C8.01 14 6 11.99 6 
+          9.5S8.01 5 10.5 5 15 7.01 15 
+          9.5 12.99 14 10.5 14z"/>
+        </svg>
+      </button>
+    </div>
+  </div>
 
- 
-  <h2>🔥 Peraturan Umum dalam Taruhan Bola (Sportsbook)
-Jenis Taruhan yang Paling Umum</h2>
-  <pre>
-1X2 (Full Time Result):
+  <!-- Parallax banner -->
+  <div class="parallax"></div>
 
-1 = Tim Tuan Rumah Menang
+  <!-- Judul di tengah -->
+  <header>
+    <h1>PANDUAN HANDEL</h1>
+  </header>
 
-X = Seri
+  <!-- Konten -->
+  <div class="content">
+    <section id="1X2">
+      <h2>1X2</h2>
+      <pre>
+menebak hasil dari pertandingan tim mana yang menang atau seri :
+1 : Tuan rumah (Home win) memenangkan pertandingan.
+x : Seri (Draw), pertandingan berakhir seri.
+2 : Tim tamu (Away win ) memenangkan pertandingan.
+untuk menang maka hasil resmi pertandingan harus sesuai dengan yang anda betting ya bosku 
+      </pre>
+    </section>  
+	
+	<div class="content">
+    <section id="HDP">
+      <h2>HDP</h2>
+      <pre>
+HDP = handicap
 
-2 = Tim Tamu Menang
-
-Handicap (Voor-an):
+dimana yang di maksud dari taruhan tersebut bisa anda menerima voor dan memberikan voor bosku
 Biasanya pakai sistem Asia (Asian Handicap). Misalnya:
 
 Tim A -0.5 artinya harus menang agar taruhan menang.
 
 Tim B +0.5 artinya kalau seri atau menang, kamu menang taruhan.
+      </pre>
+    </section>  
+	
+<div class="content">
+    <section id="OU">
+      <h2>OVER UNDER</h2>
+      <pre>
+over = lebih dari
+under = kurang dari
 
-Over/Under (O/U):
-Taruhan jumlah total gol dalam pertandingan:
+menebak jumlah goal yang terjadi dari pasaran yang di buka bosku 
 
 Over 2.5 → kalau total gol 3 atau lebih, kamu menang
-
 Under 2.5 → kalau total gol 2 atau kurang, kamu menang
+      </pre>
+    </section>  	
 
-Correct Score:
-Tebak skor akhir. Riskan tapi bayarannya besar.
+<div class="content">
+    <section id="parlay">
+      <h2>parlay</h2>
+      <pre>
+Mix parlay
+adalah taruhan yang menggabungkan beberapa team pada satu tiket 
+dalam taruhan mix parlay jika terdapat Lose (L) maka tiket sudah kalah
+untuk hasil lainnya (D, LH, WH) tiket masih berjalan. 
+      </pre>
+    </section>  
 
-First Goal / Last Goal:
-Tebak siapa yang cetak gol pertama atau terakhir.
+<div class="content">
+    <section id="correct score">
+      <h2>Tebak Score (Correct Score) </h2>
+      <pre>
+berikut pengertian  tentang taruhan Tebak Score (Correct Score) 
 
-Mix Parlay:
-Taruhan kombinasi dari beberapa pertandingan. Semua harus benar biar menang.
+CONTOH = pada pertandingna antara Real Madrid vs Barcelona,kita hanya memilih score yang 
+tertera nantinya pada kolom yang sudah tersedia,misalnya kita memilih angka 2–1 untuk 
+kemenangan Real Madrid pada posisi Fulltime,maka hasil akhir pertandingan harus sesuai 
+dengan angka tebakan kita tadinya,dan jika Barcelona yang menang dengan score akhir 2–1,maka taruhan tersebut dianggap telah kalah.    
+      </pre>
+    </section>  	
 
-
-AOS : 
-
+<div class="content">
+    <section id="AOS ">
+      <h2>AOS </h2>
+	  <pre>
 AOS (Any Other Score) artinya "skor lainnya" bosku
-Kalau skor akhir pertandingan nggak ada di daftar pilihan bursa taruhan, maka TARUHAN ANDA MENANG 
+Kalau skor akhir pertandingan nggak ada di daftar pilihan bursa taruhan, maka taruhan AOS anda menang.
 
 Tapi kalau hasil akhirnya masuk daftar bursa, berarti taruhan dinyatakan KALAH ya bosku.
+      </pre>
+    </section>  	
+
+<div class="content">
+    <section id="Double Chance">
+      <h2>Double Chance</h2>
+      <pre>
+dalam taruhan double chance anda memiliki 2 kesempatan untuk menang bosku 
+Contoh bosku bet ( 12 FULL TIME ) maka jika pertandingan berakhir di menangkan oleh tuan rumah atau tamu maka taruhan sudah di nyatakan menang bosku 
+
+arti dari 1X2 
+1 : Tuan rumah (Home win) memenangkan pertandingan.
+x : Seri (Draw), pertandingan berakhir seri.
+2 : Tim tamu (Away win ) memenangkan pertandingan.
+
+Double chance adalah jenis taruhan yang memiliki kesempatan ganda untuk memenangkan taruhan bosku 
+
+Contoh : Bet x2 FULL TIME 
+maka untuk hasil akhir pertandingan harus draw atau di menangkan oleh team tamu bosku.
+      </pre>
+    </section>  		
+
+<div class="content">
+    <section id="Total Goal">
+      <h2>Total Goal</h2>
+      <pre>
+Berikut adalah peraturan dalam bermain TOTAL GOAL
+
+0-1 Goals	( artinya total goal dari pertandingan tidak boleh lebih dari 1 maka taruhan di nyatakan menang.
+
+2-3 Goals	( artinya total goal dari pertandingan tidak boleh kurang dari 2 goal dan tidak boleh lebih dari 3 goal maka taruhan di nyatakan menang.
+
+4-6 Goals	( artinya total goal dari pertandingan tidak boleh kurang dari 4 goal dan tidak boleh lebih dari 6 goal maka taruhan di nyatakan menang.
+
+7&over ( artinya total goal dari pertandingan berjumlah  7 atau lebih maka taruhan di nyatakan menang.
+
+Semua dihitung hanya dari waktu normal (90 menit + injury time), tanpa extra time/penalti.
+      </pre>
+    </section>  		
+
+<div class="content">
+    <section id="Half Time / Full Time">
+      <h2>Half Time / Full Time</h2>
+      <pre>
+HH (Home/Home)	| Artinya Tuan rumah menang babak 1 & menang full time      
+HD (Home/Draw)	| Artinya Tuan rumah menang babak 1 & seri full time     
+HA (Home/Away)	| Artinya Tuan rumah menang babak 1 & tim tamu menang full time 
+DH (Draw/Home)	| Artinya Seri babak 1 & tuan rumah menang full time        
+DD (Draw/Draw)	| Artinya Seri babak 1 & seri full time                    
+DA (Draw/Away)	| Artinya Seri babak 1 & tim tamu menang full time        
+AH (Away/Home)	| Artinya Tamu menang babak 1 & tuan rumah menang full time    
+AD (Away/Draw)	| Artinya Tamu menang babak 1 & seri full time               
+AA (Away/Away)	| Artinya Tamu menang babak 1 & menang full time            
+
+CATATAN : Hanya berlaku untuk 90 menit + injury time, tidak termasuk extra time/penalti.
+      </pre>
+    </section>  
 	
-  </pre>
+<div class="content">
+    <section id="FIRST GOAL /  LAST GOAL">
+      <h2>FIRST GOAL /  LAST GOAL</h2>
+      <pre>
+untuk taruhan FIRST GOAL /  LAST GOAL adalah menebak team mana yang akan mendapatkan goal pertama dan goal terakhir anda juga bisa memilih taruhan No Goal nya bosku 
 
+Contoh bet : Barcelona  FIRST GOAL 
+taruhan akan di nyatakan menang apa bila Barcelona mendapatkan goal pertama dalam pertandingan jika Goal tidak di dapatkan oleh team Barcelona  maka taruhan kalah.
 
-  <h2>APA ITU PASARAN OUTRIGHT SPESIAL</h2>
-  <pre>
+Contoh bet : Real Madrid LAST GOAL 
+taruhan akan di nyatakan menang apa bila Real Madrid mendapatkan Goal terakhir dari pertandingan jika Goal terakhir tidak di dapatkan oleh team Real Madrid  maka taruhan kalah.
+
+No Goal (Tidak Ada Gol) 
+Taruhan menang jika pertandingan berakhir tanpa ada goal Contoh: Kalau pertandingan 0-0 sampai 2x45 menit selesai, taruhan No Goal menang, bosku.
+
+NB : taruhan di hitung sampai waktu penuh yaitu (2x45 menit + injury time). Extra time dan adu penalti nggak dihitung, bosku.
+      </pre>
+    </section>  			
+
+<div class="content">
+    <section id="OUTRIGHT">
+      <h2>APA ITU PASARAN OUTRIGHT SPESIAL</h2>
+      <pre>
 outright spesial adalah menu taruhan yang terdapat berbagai jenis taruhan spesial contoh seperti juara , top score, team yang akan degradasi dan promosi yang dimana taruhan akan berjalan dalam 1 musim penuh sampai ada hasil yang menentukan ya bosku.	
 Selain itu anda juga bisa bermain bursa taruhan outright Winning margin pada menu tersebut jika tersedia bursa taruhannya bosku.	
-	
-	
+      </pre>
+	  <pre>
 BELGIUM STAGE OF ELIMINATION	
 -----------------------------------------------------------------------------	
 	
@@ -102,11 +408,9 @@ Group Stage = Menebak BELGIUM Tereliminasi Di 1 penyisihan Grup nya
 Winner = Menebak BELGIUM Memenangkan Juara	
 	
 	
-Berikut Penjelasan Mengenai Taruhan Elimination Bosku.	
-	
-	
-	
-	
+Berikut Penjelasan Mengenai Taruhan Elimination Bosku.		  
+	  </pre>
+<pre>
 WINNING MARGIN	
 -----------------------------------------------------------------------------	
 	
@@ -141,9 +445,8 @@ Pokoknya selisihnya pas 2 gol, gak boleh lebih atau kurang.
 Kalau hasil akhirnya 1–0 atau 3–0 → TARUHAN KALAH. Karena itu bukan menang by 2, tapi beda margin.	
 	
 NB : Taruhan dihitung waktu normal (90 menit + injury time). Extra time/adu penalti nggak dihitung.	
-	
-	
-	
+</pre>
+<pre>
 Top 2 Finish	
 -----------------------------------------------------------------------------	
 	
@@ -157,9 +460,8 @@ pilih Arsenal - Top 2 Finish di Premier League 2024/25
 Kalau di akhir musim Arsenal berada di peringkat 1 atau 2, taruhan menang.	
 	
 Kalau Arsenal finish peringkat 3 ke bawah → kalah.	
-	
-	
-	
+</pre>
+<pre>
 WINNING GROUP	
 -----------------------------------------------------------------------------	
 	
@@ -175,8 +477,8 @@ Al Ain FC
 Juventus FC	
 	
 salah satu dari tim grup tersebut harus berhasil mewakili dan menjuarai untuk kompetisi	
-	
-	
+</pre>
+<pre>
 TO BE PROMOTED	
 -----------------------------------------------------------------------------	
 	
@@ -184,8 +486,8 @@ TO BE PROMOTED
 Adalah jenis taruhan yang menebak 1 tim yang akan berhasil promosi ke divisi liga yang lebih tinggi, baik melalui jalur otomatis (peringkat atas klasemen) maupun dengan menang di babak play-off.	
 	
 Selama tim pilihan lo berhasil naik kasta di akhir musim, taruhan dianggap menang, terlepas dari cara promosi yang ditempuh.	
-	
-	
+</pre>
+<pre>
 TO BE RELEGATED	
 -----------------------------------------------------------------------------	
 	
@@ -206,9 +508,8 @@ Serie A (Italia) → 3 tim terbawah turun ke Serie B.
 Bundesliga (Jerman) → 2 tim otomatis, +1 tim play-off degradasi.	
 	
 Liga 1 Indonesia → biasanya 3 tim terbawah turun ke Liga 2.	
-	
-	
-	
+</pre>
+<pre>
 winning method	
 -----------------------------------------------------------------------------	
 	
@@ -221,9 +522,8 @@ Extra Time = Perpanjangan Waktu atau penambahan babak
 Penalty Shootout = Adu Pinalty	
 	
 pemilihan waktu pada tim yang anda taruhkan harus sesuai dan benar dengan pasaran yang anda pilih.
-	
-	
-
+</pre>
+<pre>
 Dual Forecast - 	
 ---------------------------------------------------------------------------------	
 
@@ -252,8 +552,8 @@ Germany & Switzerland → Taruhan Kalah ❌
 
 Scotland & Switzerland → Taruhan Kalah ❌
 (karena Germany gak lolos)
-
-
+</pre>
+<pre>
 STRAIGHT FORECAST
 ---------------------------------------------------------------------------------
 
@@ -262,15 +562,15 @@ Taruhan tersebut adalah prakiraan lurus taruhan yang harus tepat finis pertama d
 Contoh anda bet :
 England / France
 Maka agar taruhan anda menang adalah Englad juara 1 dan France Juara 2 ya bosku.
-
-
+</pre>
+<pre>
 TEAM TO REACH THE FINAL
 ---------------------------------------------------------------------------------
 anda bertaruh pada team mana yang akan lolos ke final dari suatu turnamen ya bosku.
 
-Contoh,bosku bet Barcelona di liga UEFA CHAMPIONS LEAGUE maka team tersebut harus mencapai final maupun di final kalah atau menang taruhan akan di tetap di nyatakan menang karna sudah mencapai final bosku.
-
-
+Contoh,bosku bet Barcelona di liga UEFA CHAMPIONS LEAGUE maka team tersebut harus mencapai final maupun di final kalah atau menang taruhan akan tetap di nyatakan menang karna sudah mencapai final bosku.
+</pre>
+<pre>
 TEAM IN BOTTOM TWO POSITION
 ---------------------------------------------------------------------------------
 Anda bertaruh pada tim yang akan berada di dua posisi terbawah klasemen akhir liga/turnamen.
@@ -278,16 +578,16 @@ Anda bertaruh pada tim yang akan berada di dua posisi terbawah klasemen akhir li
 Contoh, bosku bet Sheffield United di English Premier League, maka tim tersebut harus mengakhiri musim di posisi 19 atau 20 (dua terbawah) agar taruhan dinyatakan MENANG.
 
 Kalau mereka finish di atas posisi 18, taruhan KALAH ya bosku.
-
-
+</pre>
+<pre>
 CLUB WORLD CUP 2025 – GROUP A TO QUALIFY
 ---------------------------------------------------------------------------------
 Anda bertaruh pada tim yang akan lolos dari Grup A ke babak berikutnya.
 
 Contoh, bosku bet Al Ahly – Group A To Qualify, maka tim tersebut harus masuk posisi 1 atau 2 di klasemen grup (sesuai format turnamen) agar taruhan dinyatakan MENANG.
 Kalau gagal lolos dari grup, taruhan dinyatakan KALAH.
-
-
+</pre>
+<pre>
 STAGE OF ELIMINATION
 ---------------------------------------------------------------------------------
 Anda bertaruh pada di babak mana tim akan tersingkir dari turnamen.
@@ -295,8 +595,8 @@ Anda bertaruh pada di babak mana tim akan tersingkir dari turnamen.
 Contoh, bosku bet Real Madrid – Eliminated in Quarter Finals, maka mereka harus kalah di perempat final agar taruhan dinyatakan MENANG.
 Kalau mereka kalah di babak lain (16 besar, semifinal, final, dll), taruhan dinyatakan KALAH.
 
-
-
+</pre>
+<pre>
 WHICH TEAM WILL ADVANCE TO NEXT ROUND
 ---------------------------------------------------------------------------------
 
@@ -306,11 +606,61 @@ Tidak peduli menang lewat extra time, penalti, atau agregat.
 Yang penting: tim tersebut lolos ke babak berikutnya
 
 intinya jika team tersebut lolos ke babak selanjutnya maka taruhan akan di nyatakan menang dan kalau team tersebut tidak lolos ke babak selanjutnya maka taruhan kalah ya bosku 
+</pre>
+<pre>
+TOP GOALSCORER
+---------------------------------------------------------------------------------
+Artinya:
+Bertaruh pada pemain yang akan menjadi top scorer (pencetak goal terbanyak) di kompetisi sesuai dengan bettingan dan musim yang anda bet 
 
+taruhan akan di nyatakan menang apa bila pemain yang anda betting menjadi top score dari kompetisi,
+taruhan di ambil dari satu musim penuh selama kompetisi di mainkan hingga selesai
 
+CATATAN TAMBAHAN 
+Dalam taruhan Top Goal Scorer , yang dihitung adalah semua gol yang dicetak selama waktu reguler (90 menit + injury time), termasuk gol dari tendangan penalti. Gol yang dicetak di extra time atau adu penalti tidak dihitung dalam taruhan ini. Jadi, hanya gol yang tercipta dalam waktu normal yang akan diperhitungkan untuk menentukan siapa yang menjadi pencetak gol terbanyak sepanjang turnamen.
 
-HANYA SEGINI PENJELASAN DARI SAYA SEKIAN DAN TERIMAKASI SALAM HOKI 168 AND 365
-  </pre>
+jikalau ada pemain dengan score yang sama dalam satu musim maka pemenang taruhan akan dibagi rata antara kedua pemain sesuai dengan odds yang di ambil. 
+</pre>
+    </section>  				
+  </div>
+  <script>
+    function toggleSearch(event) {
+      const searchBox = document.getElementById('searchBox');
+      searchBox.classList.toggle('active');
+    }
 
+    function filterContent() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const sections = document.querySelectorAll('.content section');
+
+      sections.forEach(section => {
+        const sectionText = section.innerText.toLowerCase();
+        const isMatch = sectionText.includes(query);
+        section.classList.toggle('hidden', !isMatch);
+
+        const pre = section.querySelector('pre');
+        const originalText = pre.textContent;
+        if (isMatch && query.trim() !== '') {
+          const highlighted = originalText.replace(
+            new RegExp(`(${query})`, 'gi'),
+            '<mark class="search-highlight">$1</mark>'
+          );
+          pre.innerHTML = highlighted;
+        } else {
+          pre.textContent = originalText;
+        }
+      });
+    }
+
+    window.onload = function () {
+      const sections = document.querySelectorAll('.content section');
+      sections.forEach((section, index) => {
+        setTimeout(() => {
+          section.style.opacity = 1;
+          section.style.transform = 'translateY(0)';
+        }, index * 150);
+      });
+    }
+  </script>
 </body>
 </html>
