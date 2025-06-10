@@ -7,7 +7,7 @@
 
  
   <script>
-    const sessionDuration = 10 * 60 * 1000; 
+    const sessionDuration = 5 * 60 * 1000; 
     if (!sessionStorage.getItem("sessionStart")) {
       sessionStorage.setItem("sessionStart", Date.now());
     }
@@ -224,10 +224,10 @@
 
   <!-- Judul di tengah -->
   <header>
-    <h1>PANDUAN HANDEL</h1>
+    <h1>SPORTBOOK</h1>
   </header>
 
-  <!-- Konten -->
+   <!-- Konten -->
   <div class="content">
     <section id="1X2">
       <h2>1X2</h2>
@@ -1093,6 +1093,14 @@ Jika benar, taruhan Anda menang. Jika Anunoby lebih banyak, taruhan Anda kalah.
         }, index * 150);
       });
     }
+	
   </script>
+<script>
+  // Cek apakah sudah login via PIN
+  if (sessionStorage.getItem("authenticated") !== "true") {
+    window.location.href = "pin.html";
+  }
+</script>
+
 </body>
 </html>
